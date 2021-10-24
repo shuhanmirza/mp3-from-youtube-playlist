@@ -4,7 +4,7 @@ python script for getting mp3 files from youtube playlist.
 Do your non-tech brown relatives ask you for downloading music from the internet and upload it to their mobile phones? You can't say no to them because you love them? Look no further, you are in the right repo xD
 
 ## Overview
-It's a simple pytube and moviepy implementation. It retrieves the URLs of the videos of the playlist and converts them to mp3 upon doawloading.
+It's a simple pytube and moviepy implementation. It retrieves the URLs of the videos of the playlist and converts them to mp3 upon downloading.
 
 
 ## Prerequisites
