@@ -5,11 +5,15 @@ import moviepy.editor as MP
 
 from pytube import Playlist
 from pytube import YouTube
+from termcolor import colored, cprint
 
 ARG_PLAYLIST_ID_SHORT = "-ID"
 ARG_PLAYLIST_ID_LONG = "--playlist_id"
 ARG_PLAYLIST_ID_HELP = "provide your playlist id"
-MODULE_INFO = "this script downloads youtube playlists and converts these to mp3 files"
+ARG_VIDEO_URL_SHORT = "-URL"
+ARG_VIDEO_URL_LONG = "--video_url"
+ARG_VIDEO_URL_HELP = "provide your video url"
+MODULE_INFO = "this script downloads youtube playlists/videos and converts these to mp3 files"
 YT_PLAYLIST_URL_FRAGMENT = "https://www.youtube.com/playlist?list="
 DOWNLOAD_PATH = "download"
 VIDEO_FILE_EXT = "mp4"
@@ -18,15 +22,23 @@ AUDIO_FILE_EXT = "mp3"
 
 def main():
     args = parse_args()
-    playlist = gen_playlist_from_arg(args=args)
-    download_videos_from_playlist(playlist=playlist)
+    if args.playlist_id is not None:
+        playlist = gen_playlist_from_arg(args=args)
+        download_videos_from_playlist(playlist=playlist)
+    elif args.video_url is not None:
+        download_video_from_url(video=args.video_url)
+    else:
+        cprint('You must either provide a playlist id or a video url!', 'white', 'on_red', attrs=['bold'])
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description=MODULE_INFO)
 
-    parser.add_argument(ARG_PLAYLIST_ID_SHORT, ARG_PLAYLIST_ID_LONG, required=True,
+    parser.add_argument(ARG_PLAYLIST_ID_SHORT, ARG_PLAYLIST_ID_LONG, required=False,
                         help=ARG_PLAYLIST_ID_HELP)
+
+    parser.add_argument(ARG_VIDEO_URL_SHORT, ARG_VIDEO_URL_LONG, required=False,
+                        help=ARG_VIDEO_URL_HELP)
 
     return parser.parse_args()
 
@@ -45,6 +57,10 @@ def download_videos_from_playlist(playlist):
         YouTube(url).streams.filter(file_extension=VIDEO_FILE_EXT).first().download(DOWNLOAD_PATH)
         convert_video_to_audio()
 
+def download_video_from_url(video):
+    print(video)
+    YouTube(video).streams.filter(file_extension=VIDEO_FILE_EXT).first().download(DOWNLOAD_PATH)
+    convert_video_to_audio()
 
 def convert_video_to_audio():
     for file in os.listdir(DOWNLOAD_PATH):
